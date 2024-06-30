@@ -1,0 +1,16 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+a {
+    background-color: lightgray;
+    text-decoration: none;
+    color: black;
+    margin: 0;
+    padding: 10px;
+}
+
+#nav-right a {
+    /* padding: 10px; */
+}
