@@ -1,7 +1,70 @@
 main {
+    height: 90%;
     display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#content-wrapper {
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 90%;
+}
+
+section {
+    padding: 50px;
 }
 
 #description {
     text-align: center;
+    width: 30%;
+    padding-top: 25px;
 }
+
+#content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 70%;
+}
+
+a {
+    text-align: center;
+}
+
+.curriculum {
+    background-color: lightgray;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.curriculum:hover {
+    cursor: pointer;
+    background-color: gray;
+}
+
+.completed {
+    background-color: darkgreen;
+    color: white;
+}
+
+#map {
+    background-color:gray;
+    width: 200px;
+    height: 150px;
+    margin: 25px;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+p {
+    font-size: 18px;
+}
+
