@@ -17,3 +17,16 @@ def about(request):
 
 def profile(request):
     return render(request, "profile.html")
+
+
+def preview(request):
+    context = {}
+    if "module" in request.GET:
+        context["module"] = " ".join(request.GET.get("module").split("-")).title()
+        print(context["module"])
+    return render(request, "preview.html", context)
+
+
+def module(request):
+    context = {}
+    return render(request, "module.html", context)
