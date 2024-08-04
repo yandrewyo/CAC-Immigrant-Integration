@@ -20,6 +20,8 @@
                     <a href="{%url 'profile'%}" id="profile"><img>PlaceholderProfile</a>
                 </div>
             </nav>
+            {% block extra_head_content %}
+            {% endblock %}
         </header>
         <main>
             {% block content %}

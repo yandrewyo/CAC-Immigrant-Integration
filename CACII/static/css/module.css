@@ -1,0 +1,10 @@
+#timeline {
+    border-bottom: 3px solid black;
+}
+
+.moduleHeader {
+    height: 25%;
+    background-color:darkseagreen;
+    margin: 0px;
+    padding: 5%;
+}
