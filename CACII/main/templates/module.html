@@ -15,7 +15,27 @@
 </section>
 
 <aside class="sidebar" id="chat-bot-side-bar">
-
+    <link href="{% static 'css/chat.css' %}" rel="stylesheet">
+    <!-- <script src="{% static 'jquery-3.7.1.min.js' %}"></script> -->
+    <div class="chatBot">
+        <header id="chatHeader">
+            <h2>ChatBot</h2>
+            <!-- <span alt="Close"
+                      id="cross"
+                      onclick="cancel()">X</span> -->
+        </header>
+        <ul class="chatbox">
+            <li class="chat-incoming chat">
+                <p>Hey! How can I assist you today?</p>
+            </li>
+        </ul>
+        <div class="chat-input">
+            <textarea rows="0" cols="17"
+                        placeholder="Enter a message..."></textarea>
+            <button id="sendBTN">Send</button>
+        </div>
+    </div>
+    <script src="{% static 'js/chat.js' %}" defer></script>
 </aside>
 
     <!-- <object data="{% static module_file_name %}" type="application/pdf" width="500" height="1000">

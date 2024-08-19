@@ -33,14 +33,17 @@ header {
     flex-direction: column;
 }
 
-body {
+/* body {
     overflow: hidden;
-}
+} */
 
 h4 {
     text-align: center;
 }
 
+/* #chat-bot-side-bar {
+    resize: horizontal;
+} */
 
 
 /* html {
