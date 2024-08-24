@@ -2,5 +2,7 @@
 {% load static %}
 {% block extra_head_content %}
 <link href="{% static 'css/module.css' %}" rel="stylesheet">
-<h1 class="moduleHeader">{{module_title}}</h1>
+<div id="moduleHeaderName">
+    <h1 class="moduleHeader">{{module_title}}</h1>
+</div>
 {%endblock%}
