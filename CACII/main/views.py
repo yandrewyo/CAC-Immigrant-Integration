@@ -6,6 +6,31 @@ from langchain_community.document_loaders import PyMuPDFLoader
 from django.conf import settings
 import requests
 import json
+from django.http import JsonResponse
+from .utils import get_response
+
+
+# Write the chat function so that it can pass the context["module_file_name"] value from the module function into the chat function directly
+
+
+
+def chat(request):
+    filename = request.session.get('module_file_name')
+    if not filename:
+        return JsonResponse({"error": "No filename provided in session"}, status=400)
+    if request.method == "POST":
+        user_message = request.POST.get('message')
+        if not user_message:
+            return JsonResponse({"error": "No message provided"}, status=400)
+
+        try:
+            response = get_response(user_message,filename)
+            return JsonResponse({"message": response})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
 # import os
 # import requests
 # from django.http import JsonResponse
@@ -119,7 +144,6 @@ def about(request):
 def profile(request):
     return render(request, "profile.html")
 
-
 def preview(request):
     context = {}
     if "module" in request.GET:
@@ -134,4 +158,6 @@ def module(request):
         context["module"] = request.GET.get("module")
         context["module_title"] = " ".join(request.GET.get("module").split("-")).title()
         context["module_file_name"] = context["module"] + ".pdf"
+        request.session['module_file_name'] = context["module_file_name"]
+
     return render(request, "module.html", context)
