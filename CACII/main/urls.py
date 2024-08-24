@@ -8,5 +8,5 @@ urlpatterns = [
     path("profile/", views.profile, name="profile"),
     path("timeline/module-preview/", views.preview, name="preview"),
     path("timeline/module-content/", views.module, name="module"),
-    # path('chat/', views.chat_view, name='chat')
+    path('chat/', views.chat, name='chat')
 ]

@@ -7,7 +7,30 @@
 <a href="{%url 'preview'%}?module={{module}}">to preview</a>
 
 <embed src="{% static module_file_name %}" width="1000" height="1000">
-
+    
+    <link href="{% static 'css/chat.css' %}" rel="stylesheet">
+    <!-- <script src="{% static 'jquery-3.7.1.min.js' %}"></script> -->
+    <body>
+        <div class="chatBot">
+            <header>
+                <h2>ChatBot</h2>
+                <span alt="Close"
+                      id="cross"
+                      onclick="cancel()">X</span>
+            </header>
+            <ul class="chatbox">
+                <li class="chat-incoming chat">
+                    <p>Hey! How can I assist you today?</p>
+                </li>
+            </ul>
+            <div class="chat-input">
+                <textarea rows="0" cols="17"
+                          placeholder="Enter a message..."></textarea>
+                <button id="sendBTN">Send</button>
+            </div>
+        </div>
+        <script src="{% static 'js/script.js' %}" defer></script>
+    </body>
 <!-- <h1>{{module}}</h1> -->
 <!-- <embed src="https://drive.google.com/viewerng/
 viewer?embedded=true&url=https://pdfobject.com/pdf/sample.pdf" width="1000" height="1000"> -->
