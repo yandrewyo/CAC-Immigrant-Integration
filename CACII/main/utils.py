@@ -21,7 +21,7 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-groq_api_key = "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"
+groq_api_key = ""
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
