@@ -21,7 +21,7 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-groq_api_key = "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"
+groq_api_key = ""
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,8 +82,10 @@ def get_response(user_prompt,filename):
     response = retrieval_chain.invoke({'input': user_prompt})
     retrieved_docs = retriever.invoke(user_prompt)
     if check_document_relevance(retrieved_docs, user_prompt):
+        #pdf specific response
         return response['answer']
     else:
+        #generic llm response
         response = llm.invoke(user_prompt)
         test = response.pretty_repr()
         return test

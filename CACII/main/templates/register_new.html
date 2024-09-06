@@ -1,0 +1,38 @@
+{% extends 'base_new.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="sidebar"></div>
+        <div class="content">
+            <br>
+            <h2>Register</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username*:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="first_name">First Name*:</label>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name*:</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address*:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password*:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="password2">Repeat Password*:</label>
+                    <input type="password" id="password2" name="password2" required>
+                </div>
+                <button type="submit" value="Next" class="submit-button">Register</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

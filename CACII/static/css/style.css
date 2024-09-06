@@ -1,0 +1,229 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    font-family: 'Work Sans', sans-serif;
+    display: flex;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.sidebar {
+    width: 30%;
+    background-color: #144231;
+    background-image: url('main/banner.png');
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto; 
+}
+
+h2 {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: normal;
+    font-size: 1.4rem;
+    margin-left: 5%;
+    margin-top: 3.5%;
+    margin-bottom: 2%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-left: 5%;
+}
+
+.form-group label {
+    font-size: 0.8rem; 
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="city"],
+.form-group select {
+    font-size: 0.7rem; 
+    padding: 5px;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    width: 30%;
+    box-sizing: border-box;
+    font-family: 'Work Sans', sans-serif;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="city"]:focus,
+.form-group select:focus {
+    border-color: #144231;
+    outline: none;
+}
+
+.submit-button,
+.register-button {
+    background-color: #144231;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    display: inline-block;
+    font-size: 0.7rem; 
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 5%;
+    margin-top: 8px;
+}
+
+.submit-button:hover,
+.register-button:hover {
+    background-color: #144231;
+    margin-left: 5%;
+}
+
+label {
+    margin-bottom: 15px;
+}
+
+p {
+    margin-left: 5%;
+    margin-top: 25px;
+    font-size: 0.7rem; 
+}
+
+
+
+@media (max-width: 1200px) {
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .form-group label {
+        font-size: 0.7rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="city"],
+    .form-group select {
+        font-size: 0.6rem;
+        width: 40%; /* Adjust width for medium screens */
+    }
+
+    .submit-button,
+    .register-button {
+        font-size: 0.6rem;
+    }
+
+    p {
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 900px) {
+    h2 {
+        font-size: 1rem;
+    }
+
+    .form-group label {
+        font-size: 0.6rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="city"],
+    .form-group select {
+        font-size: 0.5rem;
+        width: 50%; /* Adjust width for smaller screens */
+    }
+
+    .submit-button,
+    .register-button {
+        font-size: 0.5rem;
+    }
+
+    p {
+        font-size: 0.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    h2 {
+        font-size: 0.8rem;
+    }
+
+    .form-group label {
+        font-size: 0.5rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="city"],
+    .form-group select {
+        font-size: 0.4rem;
+        width: 60%; /* Adjust width for very small screens */
+    }
+
+    .submit-button,
+    .register-button {
+        font-size: 0.4rem;
+    }
+
+    p {
+        font-size: 0.4rem;
+    }
+}
+
+@media (max-width: 400px) {
+    h2 {
+        font-size: 0.6rem;
+    }
+
+    .form-group label {
+        font-size: 0.4rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="city"],
+    .form-group select {
+        font-size: 0.3rem;
+        width: 80%; /* Adjust width for extra small screens */
+    }
+
+    .submit-button,
+    .register-button {
+        font-size: 0.3rem;
+    }
+
+    p {
+        font-size: 0.3rem;
+    }
+}

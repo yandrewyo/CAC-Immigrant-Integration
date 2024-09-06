@@ -65,8 +65,14 @@ const generateResponse = (incomingChatLi) => {
         .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
 };
 
+// Limit the output text length to first 3 sentences
+// Process text to handle the bullet points
+
 const handleChat = () => {
     userMessage = chatInput.value.trim();
+
+    // clear the contents of the input box once the send button is clicked
+    chatInput.value = "";
     if (!userMessage) {
         return;
     }
