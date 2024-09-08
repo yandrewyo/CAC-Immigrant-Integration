@@ -55,6 +55,11 @@ const handleChat = () => {
 };
 
 sendChatBtn.addEventListener("click", handleChat);
+sendChatBtn.addEventListener("keypress", function (e) {
+    if (e.key === 'Enter') {
+      handleChat();
+    }
+});
 
 function cancel() {
 	let chatbotcomplete = document.querySelector(".chatBot");

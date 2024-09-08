@@ -5,13 +5,22 @@
 <!-- 
 <p>temp module content</p>
 <a href="{%url 'preview'%}?module={{module}}">to preview</a> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+<script src="{% static 'js/test.js' %}"></script>
+
 
 <aside class="sidebar" id="module-side-bar">
-    <h4>Articles in this module:</h4>
+    <h4 id="test">Articles in this module:</h4>
+    <ol>
+        {% for i in articles %}
+            <li>{{i}}</li>
+        {% endfor %}
+    </ol>
+
 </aside>
 
 <section id="content">
-    <embed src="{% static module_file_name %}" width="100%" height="100%">
+    <embed src="{% static module_file_name %}#page=2" width="100%" height="100%" id="pdf-view">
 </section>
 
 <aside class="sidebar" id="chat-bot-side-bar">

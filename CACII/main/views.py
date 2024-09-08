@@ -6,6 +6,8 @@ from langchain_community.document_loaders import PyMuPDFLoader
 from django.conf import settings
 import requests
 import json
+from pypdf import PdfReader
+
 # import os
 # import requests
 # from django.http import JsonResponse
@@ -58,7 +60,7 @@ import json
 #         user_message = request.POST.get('message')
 #         if not user_message:
 #             return JsonResponse({'error': 'No message provided'}, status=400)
-        
+
 #         try:
 #             response = retrieval_chain.invoke({'input': user_message})
 #             return JsonResponse({'message': response['answer']})
@@ -134,4 +136,19 @@ def module(request):
         context["module"] = request.GET.get("module")
         context["module_title"] = " ".join(request.GET.get("module").split("-")).title()
         context["module_file_name"] = context["module"] + ".pdf"
+        context["articles"] = []
+        # reader = PdfReader(f"static/{context['module_file_name']}")
+        # print(reader.pages[0].extract_text().split("\t"))
+        import pdfplumber
+
+        with pdfplumber.open(f"static/{context['module_file_name']}") as pdf:
+            first_page = pdf.pages[0]  # Access the first page
+            text = first_page.extract_text().split("\n")[0]
+            print(text)
+            for page in pdf.pages:
+                title = page.extract_text().split("\n")[0]
+                title_info = page.chars
+                if "Bold" in title_info[0].get("fontname"):
+                    context["articles"].append(title)
+
     return render(request, "module.html", context)

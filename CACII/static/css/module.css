@@ -33,6 +33,20 @@ header {
     flex-direction: column;
 }
 
+ol {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+h4 {
+    height: 5%;
+}
+
+ol {
+    height: 95%;
+}
 /* body {
     overflow: hidden;
 } */
