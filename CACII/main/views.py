@@ -38,9 +38,6 @@ def index(request):
 def timeline(request):
     return render(request, "timeline.html")
 
-@login_required
-def about(request):
-    return render(request, "about.html")
 
 
 @login_required

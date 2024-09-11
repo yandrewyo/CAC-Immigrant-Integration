@@ -5,7 +5,6 @@ from django.contrib.auth.views import LoginView,LogoutView
 urlpatterns = [
     path("", views.index, name="index"),
     path("timeline/", views.timeline, name="timeline"),
-    path("about/", views.about, name="about"),
     path("timeline/module-preview/", views.preview, name="preview"),
     path("timeline/module-content/", views.module, name="module"),
     path('chat/', views.chat, name='chat'),

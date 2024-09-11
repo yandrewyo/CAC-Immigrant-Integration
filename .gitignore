@@ -15,3 +15,5 @@ CACII/main/utils.py
 .DS_Store
 CACII/.DS_Store
 CACII/db.sqlite3
+*.pyc
+CACII/db.sqlite3
