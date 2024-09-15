@@ -1,18 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-import os
 from django.http import JsonResponse
-from langchain_community.document_loaders import PyMuPDFLoader
 from django.conf import settings
-import requests
-import json
 from django.http import JsonResponse
 from .utils import get_response
-
-
-# Write the chat function so that it can pass the context["module_file_name"] value from the module function into the chat function directly
-
-
+from django.contrib.auth.decorators import login_required
+from .models import UserProfile
+from .forms import UserRegistrationForm,UserProfileForm
+from django.contrib.auth import login, authenticate
+from django.contrib import messages
+from django.urls import reverse
 
 def chat(request):
     filename = request.session.get('module_file_name')
@@ -31,118 +28,91 @@ def chat(request):
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
-# import os
-# import requests
-# from django.http import JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-# from django.conf import settings
-# from langchain_community.document_loaders import PyMuPDFLoader
-# from langchain.text_splitter import RecursiveCharacterTextSplitter
-# from langchain_community.vectorstores import FAISS
-# from langchain_huggingface.embeddings import HuggingFaceEmbeddings
-# from langchain_groq import ChatGroq
-# from langchain.chains.combine_documents import create_stuff_documents_chain
-# from langchain.chains import create_retrieval_chain
-# from langchain_core.prompts import ChatPromptTemplate
-
-# # Ensure to set your Groq API key here
-# os.environ["TOKENIZERS_PARALLELISM"] = "false"
-# groq_api_key = "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"
-# pdf_path = "/Users/anand/openai/M-618.pdf"
-
-# # Load and process the PDF document
-# loader = PyMuPDFLoader(pdf_path)
-# documents = loader.load()
-
-# text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=64)
-# texts = text_splitter.split_documents(documents)
-
-# embeddings = HuggingFaceEmbeddings()
-# index = FAISS.from_documents(texts, embeddings)
-# retriever = index.as_retriever()
-
-# llm = ChatGroq(groq_api_key=groq_api_key, model_name="Llama3-8b-8192")
-
-# prompt = ChatPromptTemplate.from_template(
-#     """
-#     Answer the questions based on the provided context only.
-#     Please provide the most accurate response based on the question.
-#     <context>
-#     {context}
-#     <context>
-#     Questions: {input}
-#     """
-# )
-
-# document_chain = create_stuff_documents_chain(llm, prompt)
-# retrieval_chain = create_retrieval_chain(retriever, document_chain)
-
-# @csrf_exempt
-# def chat_view(request):
-#     if request.method == 'POST':
-#         user_message = request.POST.get('message')
-#         if not user_message:
-#             return JsonResponse({'error': 'No message provided'}, status=400)
-        
-#         try:
-#             response = retrieval_chain.invoke({'input': user_message})
-#             return JsonResponse({'message': response['answer']})
-#         except Exception as e:
-#             return JsonResponse({'error': str(e)}, status=500)
-#     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-
 # Create your views here.
+@login_required
 def index(request):
     return render(request, "index.html")
 
 
+@login_required
 def timeline(request):
     return render(request, "timeline.html")
 
 
-def about(request):
-    # pdf_file_path = '/Users/anand/openai/FinalText-FairHousingRegulations.pdf'
 
-    # loader = PyMuPDFLoader(pdf_path)
-    # documents = loader.load()
+@login_required
+def create_profile(request):
+    if UserProfile.objects.filter(user=request.user).exists():
+        return JsonResponse({'success': False, 'redirect_url': reverse('profile_view')})
 
-    # text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=64)
-    # texts = text_splitter.split_documents(documents)
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            user_profile = form.save(commit=False)
+            user_profile.user = request.user
+            user_profile.save()
+            return JsonResponse({'success': True, 'message': 'Profile created successfully!', 'redirect_url': reverse('index')})
+        else:
+            return JsonResponse({'success': False, 'message': 'Form is not valid.'})
+    else:
+        form = UserProfileForm()
 
-    # # Extract text from PDF using PyMuPDFLoader
-    # loader = PyMuPDFLoader(pdf_file_path)
-    # documents = loader.load()
-    # pdf_text = "\n".join([doc.page_content for doc in documents])
+    return render(request, 'profile_form.html', {'form': form})
 
-    # groq_api_key = "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"
-    # groq_api_url = "https://api.groq.com/openai/v1/chat/completions"  # Replace with actual Groq API endpoint
+@login_required
+def profile_view(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        return redirect('create_profile')  # Redirect to profile creation if no profile exists
 
-    # # Set up the request payload
-    # payload = {
-    #     "model": "llama3-70b-8192",  # Replace with the actual model identifier if needed
-    #     "prompt": pdf_text
-    # }
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True, 'message': 'Profile updated successfully!', 'redirect_url': reverse('index')})
+        else:
+            return JsonResponse({'success': False, 'message': 'Form is not valid.'})
+    else:
+        form = UserProfileForm(instance=user_profile)
 
-    # headers = {
-    #     "Authorization": f"Bearer {groq_api_key}",
-    #     "Content-Type": "application/json"
-    # }
+    return render(request, 'profile_form.html', {'form': form})
 
-    # # Make the API request
-    # response = requests.post(groq_api_url, json=payload, headers=headers)
+# @login_required
+# def create_profile(request):
+#     if UserProfile.objects.filter(user=request.user).exists():
+#         return redirect('profile_view')  # Redirect to profile view if profile already exists
 
-    # if response.status_code == 200:
-    #     groq_response = response.json().get("choices", [{}])[0].get("text", "No response")
-    # else:
-    #     groq_response = "Error: Unable to fetch response from Groq API."
+#     if request.method == 'POST':
+#         form = UserProfileForm(request.POST)
+#         if form.is_valid():
+#             user_profile = form.save(commit=False)
+#             user_profile.user = request.user
+#             user_profile.save()
+#             messages.success(request, 'Profile created successfully!')
+#             return redirect('index')
+#     else:
+#         form = UserProfileForm()
 
-    # return JsonResponse({'pdf_text': pdf_text, 'groq_response': groq_response})
-    return render(request, "about.html")
+#     return render(request, 'profile_form.html', {'form': form})
 
+# @login_required
+# def profile_view(request):
+#     try:
+#         user_profile = UserProfile.objects.get(user=request.user)
+#     except UserProfile.DoesNotExist:
+#         return redirect('create_profile')  # Redirect to profile creation if no profile exists
 
-def profile(request):
-    return render(request, "profile.html")
+#     if request.method == 'POST':
+#         form = UserProfileForm(request.POST, instance=user_profile)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Profile updated successfully!')
+#             return redirect('profile_view')  # Redirect to the same page after updating
+#     else:
+#         form = UserProfileForm(instance=user_profile)
+
+#     return render(request, 'profile_form.html', {'form': form})
 
 def preview(request):
     context = {}
@@ -161,3 +131,51 @@ def module(request):
         request.session['module_file_name'] = context["module_file_name"]
 
     return render(request, "module.html", context)
+
+def register_new(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            new_user.set_password(form.cleaned_data['password'])
+            new_user.save()
+            
+            user = authenticate(username=new_user.username, password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                return redirect('create_profile')
+            else:
+                # Handle authentication failure if necessary
+                pass
+    else:
+        form = UserRegistrationForm()
+        
+    return render(request, 'register_new.html', {'form': form})
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['uname']
+        password = request.POST['psw']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('index')  # Redirect to the main app page
+        else:
+            return HttpResponse("Invalid login credentials.")  # Handle invalid login
+    return render(request, 'login.html')  # Display the login page
+
+
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             new_user = form.save(commit=False)
+#             new_user.set_password(form.cleaned_data['password'])
+#             new_user.save()
+#             user = authenticate(username=new_user.username, password=form.cleaned_data['password'])
+#             login(request, user)
+#             return redirect('index')
+#     else:
+#         form = UserRegistrationForm()
+#     return render(request, 'register.html', {'form': form})

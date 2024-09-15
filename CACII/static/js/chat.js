@@ -1,10 +1,9 @@
 // script.js
 
-// Groq API key= "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"
 // script.js
 
 // Groq API key
-const API_KEY = "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";
+const API_KEY = "";
 const chatInput = document.querySelector('.chat-input textarea');
 const sendChatBtn = document.querySelector('.chat-input button');
 const chatbox = document.querySelector(".chatbox");
