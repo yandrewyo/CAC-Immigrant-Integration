@@ -25,14 +25,19 @@ groq_api_key = ""
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Memory to store chat history
+chat_history = []
+
 def extract_keywords(text):
+    """Extract keywords from the user prompt for document relevance checking."""
     words = word_tokenize(text.lower())
     stop_words = set(stopwords.words('english'))
     keywords = [word for word in words if word.isalpha() and word not in stop_words]
-    keywords.append("document")
+    keywords.append("document")  # Ensure the context of a document is considered
     return keywords
 
 def check_document_relevance(retrieved_docs, user_prompt):
+    """Check if the retrieved documents are relevant to the user prompt."""
     if not retrieved_docs:
         return False
     doc_texts = [doc.page_content for doc in retrieved_docs]
@@ -41,9 +46,40 @@ def check_document_relevance(retrieved_docs, user_prompt):
         for doc_text in doc_texts:
             if k in doc_text.lower():
                 return True
-    return False    
+    return False
 
-def get_response(user_prompt,filename):
+def store_in_chat_history(user_prompt, bot_response):
+    """Stores each user query and bot response in the chat history."""
+    chat_history.append({"user": user_prompt, "bot": bot_response})
+
+def get_previous_conversations():
+    """Retrieves chat history and returns it as a formatted string."""
+    return "\n".join([f"User: {item['user']}\nBot: {item['bot']}" for item in chat_history])
+
+def get_last_response():
+    """Retrieve the most recent bot response from chat history."""
+    if chat_history:
+        return chat_history[-1]['bot']
+    return None
+
+def handle_summarization(user_prompt):
+    """Handles summarization or follow-up queries referencing the last bot response."""
+    last_response = get_last_response()
+    if last_response:
+        # Generate a summarization prompt
+        llm = ChatGroq(groq_api_key=groq_api_key, model_name="Llama3-8b-8192")
+        summarize_prompt = f"Please summarize the following response:\n\n{last_response}"
+        response = llm.invoke(summarize_prompt)
+        return clean_response(response.pretty_repr())
+    else:
+        return "No previous response to summarize."
+    
+def clean_response(response):
+    """Removes unwanted text from the LLM response."""
+    return response.replace("================================== Ai Message ==================================", "").strip()
+
+
+def get_response(user_prompt, filename):
     pdf_path = str(BASE_DIR) + '/static/' + filename
 
     # Load and process the document
@@ -61,12 +97,21 @@ def get_response(user_prompt,filename):
     index = FAISS.from_documents(texts, embeddings)
     retriever = index.as_retriever()
 
+    # Check if the user is asking for a summarization or follow-up on the previous response
+    if "summarize" in user_prompt.lower() or "previous" in user_prompt.lower():
+        return handle_summarization(user_prompt)
+
+    # Retrieve previous conversations
+    previous_conversations = get_previous_conversations()
+
     # Set up the LLM
     llm = ChatGroq(groq_api_key=groq_api_key, model_name="Llama3-8b-8192")
     prompt = ChatPromptTemplate.from_template(
         """
-        Answer the questions based on the provided context only.
-        Please provide the most accurate response based on the question.
+        Answer the questions based on the provided context and previous conversation.
+        <previous_conversations>
+        {previous_conversations}
+        </previous_conversations>
         %- if context -%
         <context>
         {context}
@@ -79,13 +124,22 @@ def get_response(user_prompt,filename):
     document_chain = create_stuff_documents_chain(llm, prompt)
     retrieval_chain = create_retrieval_chain(retriever, document_chain)
 
-    response = retrieval_chain.invoke({'input': user_prompt})
+    # First, check if the user query is relevant to the document using keyword matching
     retrieved_docs = retriever.invoke(user_prompt)
+
     if check_document_relevance(retrieved_docs, user_prompt):
-        #pdf specific response
-        return response['answer']
+        # PDF-specific response, include previous conversations in the context
+        response = retrieval_chain.invoke({
+            'input': user_prompt, 
+            'previous_conversations': previous_conversations
+        })
+        bot_response = response['answer']
     else:
-        #generic llm response
+        # If no document match, generate a generic LLM response with chat memory
         response = llm.invoke(user_prompt)
-        test = response.pretty_repr()
-        return test
+        bot_response = clean_response(response.pretty_repr())
+
+    # Store the conversation in memory
+    store_in_chat_history(user_prompt, bot_response)
+    
+    return bot_response
